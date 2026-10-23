@@ -104,6 +104,7 @@ function Panel({ product, from, onClose }: { product: Product; from?: DOMRect; o
                 target={goal.frame}
                 request={goal.id}
                 intro
+                introDelay={650}
                 draggable
                 onFrame={setFrame}
                 alt={product.name}

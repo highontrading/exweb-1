@@ -494,9 +494,8 @@ p {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(251, 251, 252, 0.94);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  /* Near-opaque instead of a backdrop blur: a full-screen blur is re-computed every frame of the opening. */
+  background: rgba(251, 251, 252, 0.97);
   animation: qv-in 0.35s ease both;
   overflow-y: auto;
 }
@@ -1325,19 +1324,24 @@ p {
   width: 100%;
   height: 100%;
 }
-.spin > img {
+.spin > canvas,
+.spin > .spin-still {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
 }
-.spin > img.on {
-  opacity: 1;
+.spin[data-ready="true"] > .spin-still {
+  visibility: hidden;
+}
+/* Shadow is baked into the spin photos — a CSS filter here would be re-blurred every frame. */
+.spin.face,
+.spin.qv-img {
+  filter: none;
 }
 .spin-drag {
   cursor: grab;

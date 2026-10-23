@@ -27,7 +27,7 @@ function layout(width: number) {
 }
 
 export function Rail() {
-  const { openQuickView } = useStore();
+  const { openQuickView, quickView, cartOpen, searchOpen } = useStore();
   const stageRef = useRef<HTMLDivElement>(null);
   const railPathRef = useRef<SVGPathElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -38,6 +38,7 @@ export function Rail() {
   const motion = useRef({
     offset: 0,
     placed: false,
+    paused: false,
     speed: 0,
     velocity: 0,
     inertia: 0,
@@ -60,6 +61,11 @@ export function Rail() {
   useEffect(() => {
     motion.current.active = active;
   }, [active]);
+
+  // Nothing to animate while an overlay covers the rail — keeps the overlay smooth.
+  useEffect(() => {
+    motion.current.paused = !!quickView || cartOpen || searchOpen;
+  }, [quickView, cartOpen, searchOpen]);
 
   useEffect(() => {
     if (!width) return;
@@ -90,6 +96,10 @@ export function Rail() {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const m = motion.current;
+      if (m.paused) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
 
       if (!m.drag) {
         const cruise = reduced ? 0 : BASE_SPEED * g.scale;
@@ -223,7 +233,7 @@ export function Rail() {
                       initial={quarter}
                       target={isActive ? 0 : quarter}
                       loop={false}
-                      step={65}
+                      msPerFrame={150}
                       alt={product.name}
                       className="face"
                     />
