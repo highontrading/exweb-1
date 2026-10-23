@@ -34,6 +34,15 @@ images: {
 },
 ```
 
+### 360° spin (optional, recommended)
+
+For a smooth turn, add `spin`: photos at equal angle steps (12 photos = every 30°), starting at the front and turning so the front faces left (front → 30° → 60° → side → … → back → … → front again). With `spin` set:
+
+- on the rail, hovering plays the real turn from side to front;
+- the product view and product page get drag-to-rotate, and Front / Back / Side animate round to that angle.
+
+See `raglan-hoodie-cocoa` in `src/data/products.ts` for an example.
+
 For the rail effect to look right, every photo should be:
 
 - **Transparent background** PNG or WebP

@@ -6,6 +6,7 @@ import type { Product } from "@/data/products";
 import { formatPriceExact } from "@/config/store";
 import { useStore } from "./StoreProvider";
 import { ProductVisual } from "./ProductVisual";
+import { SpinViewer } from "./SpinViewer";
 import type { View } from "./GarmentArt";
 
 const views: { id: View; label: string }[] = [
@@ -17,6 +18,12 @@ const views: { id: View; label: string }[] = [
 export function ProductDetail({ product }: { product: Product }) {
   const { addToCart, setCartOpen } = useStore();
   const [view, setView] = useState<View>("front");
+  const spin = product.images?.spin;
+  const angleFrame = (v: View) => (spin ? Math.round((spin.length * { front: 0, side: 1, back: 2 }[v]) / 4) : 0);
+  const [goal, setGoal] = useState({ frame: 0, id: 0 });
+  const [frame, setFrame] = useState(0);
+  const shownView = spin ? views.find((v) => angleFrame(v.id) === frame)?.id : view;
+  const pick = (v: View) => (spin ? setGoal({ frame: angleFrame(v), id: Date.now() }) : setView(v));
   const [size, setSize] = useState(product.sizes[0]);
 
   return (
@@ -27,11 +34,18 @@ export function ProductDetail({ product }: { product: Product }) {
       <div className="pdp-layout">
         <div className="pdp-gallery">
           <div className="pdp-main">
-            <ProductVisual product={product} view={view} />
+            {spin ? (
+              <>
+                <SpinViewer frames={spin} target={goal.frame} request={goal.id} draggable onFrame={setFrame} alt={product.name} />
+                <p className="spin-hint">Drag to rotate · 360°</p>
+              </>
+            ) : (
+              <ProductVisual product={product} view={view} />
+            )}
           </div>
           <div className="pdp-thumbs">
             {views.map((v) => (
-              <button key={v.id} className={view === v.id ? "on" : ""} onClick={() => setView(v.id)} aria-label={`${v.label} view`}>
+              <button key={v.id} className={shownView === v.id ? "on" : ""} onClick={() => pick(v.id)} aria-label={`${v.label} view`}>
                 <ProductVisual product={product} view={v.id} />
               </button>
             ))}

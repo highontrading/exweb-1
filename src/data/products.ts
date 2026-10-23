@@ -8,6 +8,10 @@
 //    side  → shown on the rail (garment turned sideways)
 //    front → shown when hovered and in the product popup
 //    back  → shown on the "Back" tab
+//    spin  → optional 360° turn: photos every 30° (or any equal step),
+//            starting at the front and turning so the front faces left
+//            (front, 30°, 60°, side, …, back, …). Enables the smooth
+//            hover turn on the rail and drag-to-rotate in the product view.
 //  Until photos are added, a drawn placeholder (`art`) is shown.
 // ─────────────────────────────────────────────────────────────
 
@@ -23,7 +27,7 @@ export type Product = {
   description: string;
   details: string[];
   sizes: string[];
-  images?: { side?: string; front?: string; back?: string };
+  images?: { side?: string; front?: string; back?: string; spin?: string[] };
   /** Placeholder drawing used when there are no photos. */
   art: {
     kind: GarmentKind;
@@ -60,9 +64,10 @@ export const products: Product[] = [
     ],
     sizes: apparelSizes,
     images: {
-      side: "/products/raglan-hoodie-cocoa-side.webp",
-      front: "/products/raglan-hoodie-cocoa-front.webp",
-      back: "/products/raglan-hoodie-cocoa-back.webp",
+      front: "/products/raglan-hoodie-cocoa/spin-00.webp",
+      side: "/products/raglan-hoodie-cocoa/spin-03.webp",
+      back: "/products/raglan-hoodie-cocoa/spin-06.webp",
+      spin: Array.from({ length: 12 }, (_, i) => `/products/raglan-hoodie-cocoa/spin-${String(i).padStart(2, "0")}.webp`),
     },
     art: { kind: "hoodie", color: "#5b3a31" },
   },

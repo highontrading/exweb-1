@@ -6,6 +6,7 @@ import { getProduct, products, type Product } from "@/data/products";
 import { formatPriceExact } from "@/config/store";
 import { useStore } from "./StoreProvider";
 import { ProductVisual } from "./ProductVisual";
+import { SpinViewer } from "./SpinViewer";
 import { CloseIcon } from "./Icons";
 
 export function QuickView() {
@@ -33,6 +34,13 @@ export function QuickView() {
 function Panel({ product, from, onClose }: { product: Product; from?: DOMRect; onClose: () => void }) {
   const { addToCart, setCartOpen, openQuickView } = useStore();
   const [view, setView] = useState<"front" | "back">("front");
+  const spin = product.images?.spin;
+  const half = spin ? Math.round(spin.length / 2) : 0;
+  const [goal, setGoal] = useState({ frame: 0, id: 0 });
+  const [frame, setFrame] = useState(0);
+  const shownView = spin ? (frame === 0 ? "front" : frame === half ? "back" : null) : view;
+  const pick = (v: "front" | "back") =>
+    spin ? setGoal({ frame: v === "front" ? 0 : half, id: Date.now() }) : setView(v);
   const [size, setSize] = useState(product.sizes[0]);
   const [adding, setAdding] = useState(false);
   const visualRef = useRef<HTMLDivElement>(null);
@@ -90,8 +98,22 @@ function Panel({ product, from, onClose }: { product: Product; from?: DOMRect; o
       <div className="qv-layout">
         <div className="qv-visual-wrap">
           <div ref={visualRef} className="qv-visual">
-            <ProductVisual product={product} view={view} className="qv-img" />
+            {spin ? (
+              <SpinViewer
+                frames={spin}
+                target={goal.frame}
+                request={goal.id}
+                intro
+                draggable
+                onFrame={setFrame}
+                alt={product.name}
+                className="qv-img"
+              />
+            ) : (
+              <ProductVisual product={product} view={view} className="qv-img" />
+            )}
           </div>
+          {spin && <p className="spin-hint">Drag to rotate · 360°</p>}
         </div>
 
         <div className="qv-details">
@@ -106,7 +128,7 @@ function Panel({ product, from, onClose }: { product: Product; from?: DOMRect; o
 
           <div className="qv-tabs" role="tablist" aria-label="View">
             {(["front", "back"] as const).map((v) => (
-              <button key={v} role="tab" aria-selected={view === v} className={view === v ? "on" : ""} onClick={() => setView(v)}>
+              <button key={v} role="tab" aria-selected={shownView === v} className={shownView === v ? "on" : ""} onClick={() => pick(v)}>
                 {v === "front" ? "Front" : "Back"}
               </button>
             ))}

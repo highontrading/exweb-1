@@ -6,6 +6,7 @@ import { products } from "@/data/products";
 import { formatPrice, store } from "@/config/store";
 import { useStore } from "./StoreProvider";
 import { ProductVisual } from "./ProductVisual";
+import { SpinViewer } from "./SpinViewer";
 import { ArrowRightIcon } from "./Icons";
 
 const BASE_SPEED = 38; // px per second at scale 1
@@ -203,6 +204,8 @@ export function Rail() {
           Array.from({ length: geo.count }, (_, i) => {
             const product = products[i % products.length];
             const isActive = active === i;
+            const spin = product.images?.spin;
+            const quarter = spin ? Math.round(spin.length / 4) : 0;
             return (
               <div
                 key={i}
@@ -213,8 +216,23 @@ export function Rail() {
                 style={{ width: geo.boxW, height: geo.boxH }}
               >
                 <div className="rail-turn">
-                  <ProductVisual product={product} view="side" className="face face-side" />
-                  <ProductVisual product={product} view="front" className="face face-front" />
+                  {spin ? (
+                    // 90° → 0°: the garment actually turns to face you
+                    <SpinViewer
+                      frames={spin.slice(0, quarter + 1)}
+                      initial={quarter}
+                      target={isActive ? 0 : quarter}
+                      loop={false}
+                      step={65}
+                      alt={product.name}
+                      className="face"
+                    />
+                  ) : (
+                    <>
+                      <ProductVisual product={product} view="side" className="face face-side" />
+                      <ProductVisual product={product} view="front" className="face face-front" />
+                    </>
+                  )}
                 </div>
                 <span className="price-tag" style={{ fontSize: Math.max(9, 11 * geo.scale) }}>
                   {formatPrice(product.price)}

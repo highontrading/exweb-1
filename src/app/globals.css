@@ -1317,3 +1317,52 @@ p {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ───────── 360° spin viewer ───────── */
+
+.spin:not(.face) {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.spin > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.spin > img.on {
+  opacity: 1;
+}
+.spin-drag {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.spin-drag:active {
+  cursor: grabbing;
+}
+.is-active .spin.face {
+  transform: scale(1.03);
+}
+.spin-hint {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.qv-visual-wrap {
+  flex-direction: column;
+  align-items: center;
+}
+.pdp-main {
+  position: relative;
+}
+.pdp-main .spin {
+  height: calc(100% - 28px);
+}
