@@ -46,6 +46,27 @@ const fleeceDetails = [
 
 export const products: Product[] = [
   {
+    slug: "raglan-hoodie-cocoa",
+    name: "Raglan Hoodie", // PLACEHOLDER name
+    price: 199, // PLACEHOLDER price
+    category: "Hoodies",
+    description:
+      "A cropped, relaxed hoodie in deep cocoa brown with raglan sleeves, a crossover hood and a tonal “active lab motion” chest print.",
+    details: [
+      "Raglan sleeves with curved side-panel seams",
+      "Crossover hood",
+      "Ribbed cuffs and hem",
+      "Fabric & care: PLACEHOLDER",
+    ],
+    sizes: apparelSizes,
+    images: {
+      side: "/products/raglan-hoodie-cocoa-side.webp",
+      front: "/products/raglan-hoodie-cocoa-front.webp",
+      back: "/products/raglan-hoodie-cocoa-back.webp",
+    },
+    art: { kind: "hoodie", color: "#5b3a31" },
+  },
+  {
     slug: "heavyweight-hoodie-graphite",
     name: "Heavyweight Hoodie",
     price: 199,

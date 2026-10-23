@@ -36,6 +36,7 @@ export function Rail() {
 
   const motion = useRef({
     offset: 0,
+    placed: false,
     speed: 0,
     velocity: 0,
     inertia: 0,
@@ -72,6 +73,12 @@ export function Rail() {
       "d",
       `M -40 ${g.railTop} Q ${width / 2} ${g.railTop + g.sag * 2} ${width + 40} ${g.railTop}`,
     );
+
+    // First load: start with the first product just right of centre so it drifts through the middle.
+    if (!motion.current.placed) {
+      motion.current.offset = -(width / 2 + g.spacing * 1.5);
+      motion.current.placed = true;
+    }
 
     let raf = 0;
     let last = performance.now();
